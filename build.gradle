@@ -1,0 +1,123 @@
+//group 'com.wyx'
+//version '0.0.1-SNAPSHOT'
+buildscript {
+    ext {
+        springBootVersion = '1.4.2.RELEASE'
+    }
+    repositories {
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+//		mavenCentral()
+//		maven { url "https://repo.spring.io/snapshot" }
+//		maven { url "https://repo.spring.io/milestone" }
+        //maven { url "http://nexus.wanda-group.net/repository/spring-io-snapshot/" }
+        //maven { url "http://nexus.wanda-group.net/repository/spring-io-milestone/"}
+        //maven { url "http://nexus.wanda-group.net/repository/spring-io-release/" }
+        //maven { url "http://nexus.wanda-group.net/repository/maven-central/" }
+//		maven { url "http://nexus.wanda-group.net/repository/maven-public/" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+    }
+//    plugins {
+//        id "com.gorylenko.gradle-git-properties" version "1.4.6"
+//    }
+}
+
+/**生成war文件 */
+// apply plugin: 'war'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+jar {
+    baseName = 'my_test_project'
+    version = '0.0.1-SNAPSHOT'
+}
+configurations {
+    mybatisGenerator
+}
+
+repositories {
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+    //mavenCentral()
+}
+
+dependencies {
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '1.5.2.RELEASE'
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.alibaba:fastjson:1.2.31'
+    compile group: 'org.json', name: 'json'
+    compile("org.springframework.boot:spring-boot-starter-web")
+    //compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    // .yml文件中spring --base-path所在类缺失包文件
+    compile('org.springframework.boot:spring-boot-starter-data-rest')
+    // .yml文件中service --port所在类缺失包文件
+    compile("org.springframework.boot:spring-boot-starter-undertow")
+    compile 'tk.mybatis:mapper-spring-boot-starter:1.1.1'
+    // .yml文件中spring --datasource--driverClassName驱动类缺失包文件
+    compile('mysql:mysql-connector-java:6.0.5')
+    compile group:'org.springframework', name:'springloaded', version:'1.2.5.RELEASE'
+    compile('org.apache.poi:poi:3.8')
+    compile('org.apache.poi:poi-ooxml:3.8')
+    // 开发热启动工具包
+    compile("org.springframework.boot:spring-boot-devtools")
+
+    mybatisGenerator "org.mybatis.generator:mybatis-generator-core:1.3.5"
+    mybatisGenerator "mysql:mysql-connector-java:5.1.38"
+    mybatisGenerator "tk.mybatis:mapper:3.4.0"
+}
+
+def getDbProperties = {
+    def properties = new Properties()
+    file("src/main/resources/db-mysql.properties").withInputStream { inputStream ->
+        properties.load(inputStream)
+    }
+    properties
+}
+
+task mybatisGenerate {
+    doLast {
+        def properties = getDbProperties()
+        ant.properties['targetProject'] = projectDir.path
+        ant.properties['driverClass'] = properties.getProperty("jdbc.driverClassName")
+        ant.properties['connectionURL'] = properties.getProperty("jdbc.url")
+        ant.properties['userId'] = properties.getProperty("jdbc.user")
+        ant.properties['password'] = properties.getProperty("jdbc.pass")
+
+        ant.properties['modelPackage'] = properties.getProperty("package.model")
+        ant.properties['mapperPackage'] = properties.getProperty("package.mapper")
+        ant.properties['sqlMapperPackage'] = properties.getProperty("package.xml")
+
+        ant.properties['src_main_java'] = sourceSets.main.java.srcDirs[0].path
+        ant.properties['src_main_resources'] = sourceSets.main.resources.srcDirs[0].path
+
+        ant.taskdef(
+                name: 'mbgenerator',
+                classname: 'org.mybatis.generator.ant.GeneratorAntTask',
+                classpath: configurations.mybatisGenerator.asPath
+        )
+        ant.mbgenerator(overwrite: true,
+                configfile: 'src/main/resources/generatorConfig.xml', verbose: true) {
+            propertyset {
+                propertyref(name: 'targetProject')
+                propertyref(name: 'userId')
+                propertyref(name: 'driverClass')
+                propertyref(name: 'connectionURL')
+                propertyref(name: 'password')
+                propertyref(name: 'src_main_java')
+                propertyref(name: 'src_main_resources')
+                propertyref(name: 'modelPackage')
+                propertyref(name: 'mapperPackage')
+                propertyref(name: 'sqlMapperPackage')
+            }
+        }
+    }
+}
+
+

@@ -1,0 +1,67 @@
+server:
+  port: ${my.server.port}
+  undertow:
+    accesslog:
+      dir: /tmp/my_test_project.log
+      enabled: true
+      pattern: "\"%{c,tranceId}\" \"%{i,versionCode}\" \"%{i,deviceId}\" %h %l %u %t \"%r\" %s %b \"%{i,Referer}\" \"%{i,User-Agent}\""
+  compression:
+    enabled: true
+    min-response-size: 1
+
+spring:
+  #开发热启动工具，首先，IDE使用前必须设置相关配置：
+  #1)setting->Build,Execution.Deployment->Compiler->Make project automatically 2)Shift+Ctrl+Alt+/，选择Registry，然后勾选compiler.automake.allow.when.app.running
+  devtools:
+    livereload: http://localhost:9090/test/config
+    restart:
+      #某些资源在更改时不一定需要触发重启，默认情况下，更改/META-INF/maven ，/META-INF/resources ，/resources ，/static ，/public或/templates中的资源不会触发重启；该配置表示保留上面的默认（情况下的）值并添加其他的排除项
+      additional-exclude: generatorConfig.xml,db-mysql.properties
+      #排除重启文件，所有其他文件发生更改后即可重启
+      #exclude: generatorConfig.xml,db-mysql.properties
+      #禁用重启功能
+      #enabled: false
+  data:
+    rest:
+      base-path: /api
+  #jpa:
+  #	database : MYSQL
+     # generate-ddl: true # Initialize the schema on startup.
+     # hibernate.ddl-auto: update # DDL mode. This is actually a shortcut for the "hibernate.hbm2ddl.auto" property. Default to "create-drop" when using an embedded database, "none" otherwise.
+     # open-in-view: false
+     # show-sql: true # Register OpenEntityManagerInViewInterceptor. Binds a JPA EntityManager to the thread for the entire processing of the request.
+     # properties:
+      #    hibernate:
+       #     jdbc.batch_size: 100
+        #    cache.use_second_level_cache: false
+         #   order_inserts: true
+          #  order_updates: true
+           # dialect : org.hibernate.dialect.MySQL5Dialect
+
+  datasource:
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: ${my.mysql.url}
+        username: ${my.mysql.username}
+        password: ${my.mysql.password}
+
+mybatis:
+  mapperLocations: classpath*:mapping/*.xml
+  typeAliasesPackage: com.my.domain
+  #checkConfigLocation: true
+  #configLocation: classpath:mybatis-config.xml
+  #mybatis.config：mybatis-config.xml配置文件的路径
+  #mybatis.typeHandlersPackage：扫描typeHandlers的包
+  #mybatis.checkConfigLocation：检查配置文件是否存在
+  #mybatis.executorType：设置执行模式（SIMPLE, REUSE, BATCH），默认为SIMPLE
+
+my:
+  mysql:
+    # url: jdbc:mysql://121.196.217.22:3306/trmdata?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    # url: jdbc:mysql://127.0.0.1:3306/mdpdata?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+     url: jdbc:mysql://localhost:3306/springbootdb?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+     username: root
+     password: "root"
+  server:
+      port: 9090
+
+
