@@ -1,6 +1,7 @@
 package com.my.controller;
 
 import com.my.config.ConfigProperties;
+import com.my.mapper.WebDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @Autowired
     private ConfigProperties configProperties;
+    @Autowired
+    WebDtoMapper webDtoMapper;
 
     @GetMapping("/config")
     public String configValue() {
         System.out.println("==================="+configProperties.getPort()+"===================");
+        System.out.println("total:" + webDtoMapper.selectTotal());
         return configProperties.getPort();
     }
 }
