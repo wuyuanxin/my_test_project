@@ -68,11 +68,22 @@ dependencies {
     // 开发热启动工具包
     compile("org.springframework.boot:spring-boot-devtools")
 
+    //spring cloud eureka
+    compile('org.springframework.cloud:spring-cloud-starter-eureka')
+    compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
+
+    compile("org.apache.kafka:kafka_2.10:0.8.2.1")
+
+
     mybatisGenerator "org.mybatis.generator:mybatis-generator-core:1.3.5"
     mybatisGenerator "mysql:mysql-connector-java:5.1.38"
     mybatisGenerator "tk.mybatis:mapper:3.4.0"
 }
-
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
+    }
+}
 def getDbProperties = {
     def properties = new Properties()
     file("src/main/resources/db-mysql.properties").withInputStream { inputStream ->

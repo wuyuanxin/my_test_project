@@ -10,10 +10,11 @@ server:
     min-response-size: 1
 
 spring:
+  application:
+    name: client
   #开发热启动工具，首先，IDE使用前必须设置相关配置：
   #1)setting->Build,Execution.Deployment->Compiler->Make project automatically 2)Shift+Ctrl+Alt+/，选择Registry，然后勾选compiler.automake.allow.when.app.running
   devtools:
-    livereload: http://localhost:9090/test/config
     restart:
       #某些资源在更改时不一定需要触发重启，默认情况下，更改/META-INF/maven ，/META-INF/resources ，/resources ，/static ，/public或/templates中的资源不会触发重启；该配置表示保留上面的默认（情况下的）值并添加其他的排除项
       additional-exclude: generatorConfig.xml,db-mysql.properties
@@ -62,6 +63,16 @@ my:
      username: root
      password: "root"
   server:
-      port: 9090
+      port: 7080
 
-
+eureka:
+  instance:
+    prefer-ip-address: true #像eureka服务注册信息时，使用ip地址，默认使用hostname(@EnableEurekaClient->服务提供者时使用)
+    hostname: client1 #服务名称(@EnableEurekaServer->注册服务时使用)
+  server:
+    #enable-self-preservation: false #为了便于测试，取消eureka的保护模式，如果启动的话，比如api提供者关闭了，但是eureka仍然保留信息(@EnableEurekaServer->注册服务时使用)
+  client:
+    #register-with-eureka: false #是否注册到eureka(@EnableEurekaServer->注册服务时使用)
+    #fetch-registry: false #是否获取注册信息(@EnableEurekaServer->注册服务时使用)
+    service-url:
+      defaultZone: http://eureka.server1:9090/eureka/,http://eureka.server2:9091/eureka/,http://eureka.server3:9092/eureka/ #eureka的服务地址，/eureka是固定的
