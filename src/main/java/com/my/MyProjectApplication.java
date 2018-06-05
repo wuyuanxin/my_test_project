@@ -56,7 +56,7 @@ import org.springframework.web.client.RestTemplate;
 /** 注册服务-服务端(eureka-service)*/
 //@EnableEurekaServer
 /** 服务提供者-客户端(eureka-client)*/
-@EnableEurekaClient
+//@EnableEurekaClient
 public class MyProjectApplication extends SpringBootServletInitializer {
     @Bean //定义REST客户端，RestTemplate实例
     @LoadBalanced //开启负债均衡的能力
