@@ -74,6 +74,9 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
 
     compile("org.apache.kafka:kafka_2.10:0.8.2.1")
+    
+    // aliyun rocketMQ
+    compile("com.aliyun.openservices:ons-client:1.2.4")
 
 
     mybatisGenerator "org.mybatis.generator:mybatis-generator-core:1.3.5"
