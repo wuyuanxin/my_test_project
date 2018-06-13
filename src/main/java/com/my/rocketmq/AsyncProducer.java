@@ -10,20 +10,34 @@ import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.SendCallback;
 import com.aliyun.openservices.ons.api.SendResult;
 
+/**
+ * 备注》》
+ * 1.登录阿里云，然后创建Access Key
+ * 创建地址：https://ak-console.aliyun.com/?spm=5176.2020520142.aliyun_topbar.193.50832b56hnCJ66#/
+ * 
+ * 2.开通消息队列（MQ）
+ * 开通地址：https://www.aliyun.com/product/ons
+ * 
+ * 3.创建Topic/生产者/消费者
+ * 地址：https://ons.console.aliyun.com/?spm=5176.6660585.774526198.1.7c9f6bf8ovoX8B#/TopicManagement?regionId=mq-internet-access&_k=tgn66m
+ * 
+ * @author wyx
+ *
+ */
 public class AsyncProducer {
 
 	public static void main(String[] args) {
 		Properties properties = new Properties();
-        properties.put(PropertyKeyConst.ProducerId, "PID_YJC_DEMO_02");// 您在MQ控制台创建的Producer ID
-        properties.put(PropertyKeyConst.AccessKey, "rIa4vosh93cvU79x");// 鉴权用AccessKey，在阿里云服务器管理控制台创建
-        properties.put(PropertyKeyConst.SecretKey, "Cp3Mqo0UgqbLfRU5dSCboxLHei73M8");// 鉴权用SecretKey，在阿里云服务器管理控制台创建
+        properties.put(PropertyKeyConst.ProducerId, "PID_WYX_DEMO_01");// 您在MQ控制台创建的Producer ID
+        properties.put(PropertyKeyConst.AccessKey, "LTAIqIU8gY6mwKKn");// 鉴权用AccessKey，在阿里云服务器管理控制台创建
+        properties.put(PropertyKeyConst.SecretKey, "70oFaKsS68FUWmOJCUVUUX3XsMPEwK");// 鉴权用SecretKey，在阿里云服务器管理控制台创建
         properties.setProperty(PropertyKeyConst.SendMsgTimeoutMillis, "10000");//设置发送超时时间，单位毫秒
         Producer producer = ONSFactory.createProducer(properties);
         // 在发送消息前，必须调用start方法来启动Producer，只需调用一次即可。
         producer.start();
         Message msg = new Message(
                 // Message Topic
-                "yjc_mq_demo",
+                "wuyuanxin_demo_topic",
                 // Message Tag,
                 // 可理解为Gmail中的标签，对消息进行再归类，方便Consumer指定过滤条件在MQ服务器过滤
                 "demo3",
@@ -51,7 +65,7 @@ public class AsyncProducer {
         
         Message msg2 = new Message(
                 // Message Topic
-                "yjc_mq_demo",
+                "wuyuanxin_demo_topic",
                 // Message Tag,
                 // 可理解为Gmail中的标签，对消息进行再归类，方便Consumer指定过滤条件在MQ服务器过滤
                 "demo3",
